@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102a43"><title>কক্সবাজার | ভ্রমণের ছবি</title>
+<style>
+:root{color-scheme:light;--ink:#172b4d;--muted:#62748a;--line:#dbe4ee;--blue:#1769aa;--paper:#f5f8fc}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}header{padding:24px 16px;background:linear-gradient(135deg,#102a43,#1769aa);color:#fff}header>div,main{max-width:1050px;margin:auto}a{color:inherit}.back{color:#e3f0fb;text-decoration:none;font-size:14px}h1{margin:18px 0 4px;font-size:clamp(25px,5vw,36px)}header p{margin:0;color:#dce9f5}main{padding:20px 16px 45px}.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}.btn{border:0;border-radius:10px;background:var(--blue);color:white;padding:10px 14px;font-weight:650;font-size:14px;cursor:pointer}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.light{background:#e5eff9;color:#174d7a}.count{color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}.photo{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden}.photo img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#e8eef5}.photo .meta{padding:10px}.photo label{display:flex;gap:8px;align-items:flex-start;font-size:13px;overflow-wrap:anywhere}.photo input{margin-top:3px}.photo a{display:block;margin-top:8px;color:#1769aa;font-size:13px;text-decoration:none}.empty{padding:24px;border:1px dashed #b8c9da;border-radius:14px;background:#fff;color:var(--muted);line-height:1.8}.hint{margin-top:20px;color:var(--muted);font-size:13px;line-height:1.8}code{overflow-wrap:anywhere}
+</style></head><body>
+<header><div><a class="back" href="../">← সব অ্যালবাম</a><h1>কক্সবাজার</h1><p>কক্সবাজারের ভ্রমণের ছবি</p></div></header>
+<main><div class="tools"><button id="selectAll" class="btn light" disabled>সব নির্বাচন</button><button id="download" class="btn" disabled>নির্বাচিত ছবি ডাউনলোড</button><span id="count" class="count">0টি ছবি</span></div>
+<div id="gallery" class="grid"></div>
+<p class="hint">ছবির আসল ফাইল ডাউনলোড করতে ছবির নামের নিচের “মূল ছবি ডাউনলোড” লিংক ব্যবহার করুন। একাধিক ছবি নির্বাচন করলে ব্রাউজার প্রতিটি ফাইল আলাদাভাবে ডাউনলোড করবে; ব্রাউজার একাধিক ডাউনলোডের অনুমতি চাইতে পারে।</p>
+<div class="hint">ছবি যোগ করতে এই ফোল্ডারে ছবির ফাইল আপলোড করুন, তারপর নিচের <code>photos</code> তালিকায় প্রতিটি ফাইলের নাম লিখে এই পেজ আপডেট করুন। GitHub Pages-এ ফোল্ডারের ভেতরের ফাইল নিজে থেকে তালিকাভুক্ত হয় না।</div>
+</main>
+<script>
+/* নতুন ছবি যোগের উদাহরণ:
+const photos = [
+  { file: "sajek-01.jpg", title: "সাজেকের পাহাড়" },
+  { file: "sajek-02.jpg", title: "ভ্রমণের মুহূর্ত" }
+];
+*/
+const photos = [];
+const gallery = document.getElementById('gallery');
+const count = document.getElementById('count');
+const selectAll = document.getElementById('selectAll');
+const download = document.getElementById('download');
+function update(){const boxes=[...document.querySelectorAll('.pick')];const n=boxes.filter(x=>x.checked).length;count.textContent=photos.length+'টি ছবি · নির্বাচিত '+n+'টি';download.disabled=n===0;selectAll.disabled=photos.length===0;selectAll.textContent=n===boxes.length&&boxes.length?'নির্বাচন বাতিল':'সব নির্বাচন';}
+photos.forEach((photo,i)=>{const card=document.createElement('article');card.className='photo';const img=document.createElement('img');img.src=encodeURI(photo.file);img.alt=photo.title||photo.file;img.loading='lazy';const meta=document.createElement('div');meta.className='meta';const label=document.createElement('label');const box=document.createElement('input');box.type='checkbox';box.className='pick';box.value=photo.file;box.addEventListener('change',update);const name=document.createElement('span');name.textContent=photo.title||photo.file;label.append(box,name);const link=document.createElement('a');link.href=encodeURI(photo.file);link.download=photo.file.split('/').pop();link.textContent='মূল ছবি ডাউনলোড';meta.append(label,link);card.append(img,meta);gallery.append(card);});
+if(!photos.length){gallery.innerHTML='<div class="empty">এখনও কোনো ছবি যোগ করা হয়নি। এই অ্যালবামের ফোল্ডারে ছবি আপলোড করে কোডের <code>photos</code> তালিকায় ফাইলের নাম যোগ করলে ছবিগুলো এখানে দেখা যাবে।</div>';}
+selectAll.addEventListener('click',()=>{const boxes=[...document.querySelectorAll('.pick')];const all=boxes.every(x=>x.checked);boxes.forEach(x=>x.checked=!all);update();});
+download.addEventListener('click',()=>{document.querySelectorAll('.pick:checked').forEach((box,i)=>{const a=document.createElement('a');a.href=encodeURI(box.value);a.download=box.value.split('/').pop();document.body.appendChild(a);setTimeout(()=>{a.click();a.remove();},i*350);});});
+update();
+</script></body></html>
